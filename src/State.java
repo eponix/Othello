@@ -5,9 +5,14 @@ public class State {
 	
 	public State(int size){
 		matrix = new int[size][size];
+		turn = -1;	// black begins
 	}
 	
-	public void Clear(){
+	public void changeTurn(){
+		turn *= -1;
+	}
+	
+	public void clear(){
 		for(int i = 0; i < matrix.length; i++){
 			for(int j = 0; j < matrix.length; j++){
 				if((i == 3 && j == 3) || (i == 4 && j == 4)){

@@ -1,4 +1,3 @@
-import java.util.HashSet;
 import java.util.Set;
 
 public class Game {
@@ -17,13 +16,26 @@ public class Game {
 	
 	public void run(){
 		State board = new State(boardSize);
-		board.Clear();
+		board.clear();
 		Set<Coordinates> moves = gameEngine.findAllLegalMoves(board);
-//		Set<Coordinates> moves = new HashSet<Coordinates>();
 		printBoard(board, moves);
+		
+//		while(!moves.isEmpty()){
+		for(int k = 0; k < 10; k++){
+			Coordinates avaliableMove = moves.toArray(new Coordinates[0])[0];
+			board.matrix[avaliableMove.getRow()][avaliableMove.getCol()] = board.turn;
+			board.changeTurn();
+			moves = gameEngine.findAllLegalMoves(board);
+			printBoard(board, moves);
+		}
 	}
 
 	private void printBoard(State state, Set<Coordinates> moves) {
+		Coordinates[] movesArray = moves.toArray(new Coordinates[0]);
+		for(int k = 0; k < movesArray.length; k++){
+			System.out.println("coordinate for legal move (" + movesArray[k].getRow() + "," + movesArray[k].getCol() + ")");
+		}
+		
 		for(int i = 0; i < boardSize; i++){
 			System.out.print("|");
 			for(int j = 0; j < boardSize; j++){
