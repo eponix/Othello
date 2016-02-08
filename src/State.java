@@ -25,4 +25,13 @@ public class State {
 			}
 		}
 	}
+	
+	public int calculateScore(int player){
+		int sum;
+		for(int i = 0; i < matrix.length; i++){
+			for(int j = 0; j < matrix.length; j++){
+				if()
+			}
+		}
+	}
 }

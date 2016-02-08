@@ -6,12 +6,12 @@ public class Game {
 	private GameEngine gameEngine;
 	
 	public static void main(String[] args){
-		new Game();
+		new Game(8);
 	}
 
-	public Game(){
+	public Game(int boardSize){
 		gameEngine = new GameEngine(boardSize);
-		run();
+//		run();
 	}
 	
 	public void run(){
@@ -19,25 +19,36 @@ public class Game {
 		board.clear();
 		Set<Coordinates> moves = gameEngine.findAllLegalMoves(board);
 		printBoard(board, moves);
-		
-//		while(!moves.isEmpty()){
-		for(int k = 0; k < 10; k++){
-			Coordinates avaliableMove = moves.toArray(new Coordinates[0])[0];
-			board.matrix[avaliableMove.getRow()][avaliableMove.getCol()] = board.turn;
+		boolean skipTurn = false;
+		while(!moves.isEmpty() || skipTurn){
+//		for(int k = 0; k < 10; k++){
+			if (!skipTurn){
+				Coordinates avaliableMove = moves.toArray(new Coordinates[0])[0];
+				gameEngine.makeMove(board, avaliableMove);
+			}
 			board.changeTurn();
 			moves = gameEngine.findAllLegalMoves(board);
+			if (moves.isEmpty() && skipTurn){
+				skipTurn = false;
+			}
+			else if(moves.isEmpty()){
+				skipTurn = true;
+			}
+			else{
+				skipTurn = false;
+			}
 			printBoard(board, moves);
 		}
 	}
 
-	private void printBoard(State state, Set<Coordinates> moves) {
+	void printBoard(State state, Set<Coordinates> moves) {
 		Coordinates[] movesArray = moves.toArray(new Coordinates[0]);
 		for(int k = 0; k < movesArray.length; k++){
 			System.out.println("coordinate for legal move (" + movesArray[k].getRow() + "," + movesArray[k].getCol() + ")");
 		}
 		
 		for(int i = 0; i < boardSize; i++){
-			System.out.print("|");
+			System.out.print(i + "|");
 			for(int j = 0; j < boardSize; j++){
 				if(moves.contains(new Coordinates(i,j))){
 					System.out.print("_1_|");
@@ -48,7 +59,8 @@ public class Game {
 					System.out.print("_" + m + "_|");
 				}
 			}
-			System.out.println("");
+			System.out.println(i);
 		}
+		System.out.println("   0   1   2   3   4   5   6   7   ");
 	}
 }

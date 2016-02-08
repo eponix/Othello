@@ -8,6 +8,30 @@ public class GameEngine {
 	public GameEngine(int boardSize){
 		this.boardSize = boardSize;
 	}
+	
+	public void makeMove(State state, Coordinates move){
+		state.matrix[move.getRow()][move.getCol()] = state.turn;
+		findLegalMovesForDisc(move.getRow(), move.getCol(), state, true);
+	}
+	
+	private boolean turnDisc(int dir, int row, int col, State state) {
+		if(outOfBounds(row, col, state) || state.matrix[row][col] == 0){
+			return false;
+		}else if(state.matrix[row][col] == state.turn){
+			return true;
+		}else if(state.matrix[row][col] == state.turn * -1){
+			Coordinates c = changePosition(dir, row, col);
+			if (turnDisc(dir, c.getRow(), c.getCol(), state)){
+				System.out.println("Turning "+ row + "," + col);
+				state.matrix[row][col] = state.turn;
+				return true;
+			}else{
+				return false;
+			}
+		}
+		return false;
+	}
+
 
 	public Set<Coordinates> findAllLegalMoves(State state){
 		Set<Coordinates> legalMoves = new HashSet<Coordinates>();
@@ -17,7 +41,7 @@ public class GameEngine {
 			for(int j = 0; j < boardSize; j++){
 				if(state.matrix[i][j] == state.turn){
 					System.out.println("Found my disc at (" + i + "," + j + ")");
-					Set<Coordinates> list = findLegalMovesForDisc(i,j,state);
+					Set<Coordinates> list = findLegalMovesForDisc(i,j,state, false);
 					legalMoves.addAll(list);
 				}
 			}
@@ -25,19 +49,24 @@ public class GameEngine {
 		return legalMoves;
 	}
 
-	private Set<Coordinates> findLegalMovesForDisc(int row, int col, State state) {
+	private Set<Coordinates> findLegalMovesForDisc(int row, int col, State state, boolean doMove) {
 		Set<Coordinates> coordinates = new HashSet<Coordinates>();
 		int dir = 0;
 		for(int i = row-1; i <= row+1; i++){
 			for(int j = col-1; j <= col+1; j++){
 				dir++;
-				if(!outOfBounds(i, j, state) && state.matrix[i][j] == state.turn *-1){
+				if(!outOfBounds(i, j, state) && state.matrix[i][j] == state.turn *-1 ){
 					System.out.println("Found opponent's disc at (" + i + "," + j + ")" );
-					Coordinates c = changePosition(dir, i, j);
-					Coordinates legalMove = legalMove(dir, c.getRow(), c.getCol(), state);
-					if(legalMove != null){
-						System.out.println("Added legal move to list");
-						coordinates.add(legalMove);
+					if(doMove){
+						System.out.println("Making a move!");
+						turnDisc(dir, i, j, state);
+					}else{
+						Coordinates c = changePosition(dir, i, j);
+						Coordinates legalMove = legalMove(dir, c.getRow(), c.getCol(), state);
+						if(legalMove != null){
+							System.out.println("Added legal move to list");
+							coordinates.add(legalMove);
+						}
 					}
 				}
 			}
