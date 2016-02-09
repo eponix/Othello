@@ -2,18 +2,18 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class GameEngine {
-	
+
 	private int boardSize;
-	
+
 	public GameEngine(int boardSize){
 		this.boardSize = boardSize;
 	}
-	
+
 	public void makeMove(State state, Coordinates move){
 		state.matrix[move.getRow()][move.getCol()] = state.turn;
 		findLegalMovesForDisc(move.getRow(), move.getCol(), state, true);
 	}
-	
+
 	private boolean turnDisc(int dir, int row, int col, State state) {
 		if(outOfBounds(row, col, state) || state.matrix[row][col] == 0){
 			return false;
@@ -22,7 +22,7 @@ public class GameEngine {
 		}else if(state.matrix[row][col] == state.turn * -1){
 			Coordinates c = changePosition(dir, row, col);
 			if (turnDisc(dir, c.getRow(), c.getCol(), state)){
-//				System.out.println("Turning "+ row + "," + col);
+				//				System.out.println("Turning "+ row + "," + col);
 				state.matrix[row][col] = state.turn;
 				return true;
 			}else{
@@ -36,11 +36,11 @@ public class GameEngine {
 	public Set<Coordinates> findAllLegalMoves(State state){
 		Set<Coordinates> legalMoves = new HashSet<Coordinates>();
 		String m = (state.turn == 1) ? "white" : "black";
-//		System.out.println("Turn: " + m);
+		//		System.out.println("Turn: " + m);
 		for(int i = 0; i < boardSize; i++){
 			for(int j = 0; j < boardSize; j++){
 				if(state.matrix[i][j] == state.turn){
-//					System.out.println("Found my disc at (" + i + "," + j + ")");
+					//					System.out.println("Found my disc at (" + i + "," + j + ")");
 					Set<Coordinates> list = findLegalMovesForDisc(i,j,state, false);
 					legalMoves.addAll(list);
 				}
@@ -56,15 +56,15 @@ public class GameEngine {
 			for(int j = col-1; j <= col+1; j++){
 				dir++;
 				if(!outOfBounds(i, j, state) && state.matrix[i][j] == state.turn *-1 ){
-//					System.out.println("Found opponent's disc at (" + i + "," + j + ")" );
+					//					System.out.println("Found opponent's disc at (" + i + "," + j + ")" );
 					if(doMove){
-//						System.out.println("Making a move!");
+						//						System.out.println("Making a move!");
 						turnDisc(dir, i, j, state);
 					}else{
 						Coordinates c = changePosition(dir, i, j);
 						Coordinates legalMove = legalMove(dir, c.getRow(), c.getCol(), state);
 						if(legalMove != null){
-//							System.out.println("Added legal move to list");
+							//							System.out.println("Added legal move to list");
 							coordinates.add(legalMove);
 						}
 					}
@@ -73,7 +73,7 @@ public class GameEngine {
 		}
 		return coordinates;
 	}
-	
+
 	private Coordinates legalMove(int dir, int row, int col, State state) {
 		if(outOfBounds(row, col, state) || state.matrix[row][col] == state.turn){
 			return null;
@@ -91,26 +91,26 @@ public class GameEngine {
 		case 1:
 		case 2:
 		case 3: row -=1;
-				break;
+		break;
 		case 7:
 		case 8:
 		case 9:	row +=1;
-				break;
+		break;
 		}
-		
+
 		switch(dir){
 		case 1:
 		case 4:
 		case 7: col -=1;
-				break;
+		break;
 		case 3:
 		case 6:
 		case 9: col +=1;
-				break;
+		break;
 		}
 		return new Coordinates(row, col);
 	}
-	
+
 	private boolean outOfBounds(int row, int col, State state){
 		return (row < 0 || col < 0 || row > state.matrix.length -1 || col > state.matrix[0].length -1);
 	}

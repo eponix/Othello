@@ -3,13 +3,13 @@ public class State {
 	public int[][] matrix;		
 	public int turn;		// 1 white, 0 empty, -1 black
 	private int size;
-	
+
 	public State(int size){
 		matrix = new int[size][size];
 		turn = -1;	// black begins
 		this.size = size;
 	}
-	
+
 	public void changeTurn(){
 		turn *= -1;
 	}
@@ -27,7 +27,7 @@ public class State {
 			}
 		}
 	}
-	
+
 	public int calculateScore(int player){ // player: 1 white, -1 black
 		int sum = 0;
 		for(int i = 0; i < matrix.length; i++){
@@ -37,10 +37,10 @@ public class State {
 		}
 		return sum;
 	}
-	
+
 	public State clone(){
 		State temp = new State(size);
-//		temp.matrix = this.matrix.clone();
+		//		temp.matrix = this.matrix.clone();
 		for(int i = 0; i < size; i++){
 			for(int j = 0; j < size; j++){
 				temp.matrix[i][j] = this.matrix[i][j];

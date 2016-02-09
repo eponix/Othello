@@ -3,7 +3,7 @@ import java.util.Set;
 
 public class Game {
 	
-	private int boardSize = 5;
+	private int boardSize = 4;
 	private GameEngine gameEngine;
 	
 	public static void main(String[] args){
@@ -52,7 +52,7 @@ public class Game {
 				}else if(state.matrix[i][j] == 0){
 					System.out.print("___|");
 				}else {
-					String m = (state.matrix[i][j] == 1) ? "บ" : "•";
+					String m = (state.matrix[i][j] == 1) ? "ยบ" : "โ€ข";
 					System.out.print("_" + m + "_|");
 				}
 			}
@@ -71,7 +71,7 @@ public class Game {
 				}else if(state.matrix[i][j] == 0){
 					System.out.print("___|");
 				}else {
-					String m = (state.matrix[i][j] == 1) ? "บ" : "•";
+					String m = (state.matrix[i][j] == 1) ? "ยบ" : "โ€ข";
 					System.out.print("_" + m + "_|");
 				}
 			}
