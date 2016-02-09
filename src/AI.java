@@ -1,10 +1,11 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
 public class AI {
 
-	private int boardSize = 8;
+	private int boardSize = 5;
 	private GameEngine gameEngine;
 	private Game game;
 	private Node first;
@@ -20,82 +21,69 @@ public class AI {
 	}
 
 	public void run(){
+		HashMap<Coordinates, Integer> suggestions = new HashMap<Coordinates, Integer>();
 		State board = new State(boardSize);
 		board.clear();
+		State boardClone = board.clone();
 		Set<Coordinates> moves = gameEngine.findAllLegalMoves(board);
-		game.printBoard(board, moves);
-
-		boolean skipTurn = false;
 		first = new Node(true);
-		first.move =  moves.toArray(new Coordinates[0])[0];
-		while(!moves.isEmpty() || skipTurn){
-			//		for(int k = 0; k < 10; k++){
-			if (!skipTurn){
-				Coordinates avaliableMove = moves.toArray(new Coordinates[0])[0];
-				gameEngine.makeMove(board, avaliableMove);
-			}
-			board.changeTurn();
-			moves = gameEngine.findAllLegalMoves(board);
-			if (moves.isEmpty() && skipTurn){
-				skipTurn = false;
-			}
-			else if(moves.isEmpty()){
-				skipTurn = true;
-			}
-			else{
-				skipTurn = false;
-			}
-			game.printBoard(board, moves);
+		board.changeTurn();
+		for(Coordinates move : moves){
+			suggestions.put(move, generateValueForMove(first, board, -1, false, 0));
+			game.printBoard(boardClone, suggestions);
 		}
+		System.out.println();
+		game.printBoard(boardClone, suggestions);
 	}
 
-	private int generateValueForMove(Node node, State board, int player){
-		//		Leaf
+	private int generateValueForMove(Node node, State board, int player, boolean skipTurn, int counter){
+		counter++;
 		board.changeTurn();
 		Set<Coordinates> moves = gameEngine.findAllLegalMoves(board);
-		if(board.noLegalMoves()){ // moves.isEmpty() och med skipTurn
-			return state.calculateScore(player);
+		if(moves.isEmpty() && skipTurn){ // Leaf
+//			System.out.println("leaf, depth: " + counter);
+			int score = board.calculateScore(player);
+			return score;
+		}else if(moves.isEmpty()){
+			skipTurn = true;
+			Node child = new Node(!node.MAX, node.alpha, node.beta);
+			node.value = generateValueForMove(child, board, player, skipTurn, counter);
+			if(node.MAX){
+				node.alpha = node.value;
+			}else{
+				node.beta = node.value;
+			}
+		}else{
+			skipTurn = false;
 		}
+		Iterator<Coordinates> movesIter = moves.iterator();
 		if(node.MAX){
-			Iterator movesIter = moves.iterator();
-//			if(node.value <= node.beta){
-//				Node child = new Node(!node.MAX);
-//				node.children.add(child);
-//				gameEngine.makeMove(board, (Coordinates) movesIter.next()); // check hasNExt first
-//				board.changeTurn();
-//				node.value = generateValueForMove(child, board, player);
-//				node.alpha = node.value;
-//			}
+			int childCounter = 0;
 			//		Do we have a smaller value than Beta in node.value ? In that case, we need to evaluate eventual worse cases (in the children)
 			//		If its bigger, it's not going to replace the parent anyway.
 			while(movesIter.hasNext() && node.value <= node.beta){
+				State boardClone = board.clone();
 				Node child = new Node(!node.MAX, node.alpha, node.beta);
-				node.children.add(child);
-				gameEngine.makeMove(board, (Coordinates) movesIter.next());
-				int temp = generateValueForMove(child, board, player); // flytta till före ifsatsen
+				gameEngine.makeMove(boardClone, (Coordinates) movesIter.next());
+				int temp = generateValueForMove(child, boardClone, player, skipTurn, counter); // flytta till före ifsatsen
 				if(temp > node.value){
 					node.value = temp;
 					node.alpha = node.value;
 				}
+				System.out.println("Children: "+ ++childCounter + " on level " + counter);
+			}
+			if(counter < 10){
+				System.out.println("level "+ counter + " reached");
 			}
 			return node.value;
 		}else{
-			Iterator movesIter = moves.iterator();
-//			if(node.value >= node.alpha){
-//				Node child = new Node(!node.MAX);
-//				node.children.add(child);
-//				gameEngine.makeMove(board, (Coordinates) movesIter.next()); // check hasNExt first
-//				board.changeTurn();
-//				node.value = generateValueForMove(child, board, player);
-//				node.beta = node.value;
-//			}
 			//		Do we have a smaller value than Beta in node.value ? In that case, we need to evaluate eventual worse cases (in the children)
 			//		If its bigger, it's not going to replace the parent anyway.
 			while(movesIter.hasNext() && node.value >= node.alpha){
+				State boardClone = board.clone();
 				Node child = new Node(!node.MAX);
-				node.children.add(child);
-				gameEngine.makeMove(board, (Coordinates) movesIter.next());
-				int temp = generateValueForMove(child, board, player); // flytta till före ifsatsen
+				gameEngine.makeMove(boardClone, (Coordinates) movesIter.next());
+				int temp = generateValueForMove(child, boardClone, player, skipTurn, counter); // flytta till före ifsatsen
 				if(temp < node.value){
 					node.value = temp;
 					node.beta = node.value;
@@ -111,10 +99,12 @@ public class AI {
 		public int alpha;
 		public int beta;
 		public boolean MAX;
-		public Coordinates move;
-		public ArrayList<Node> children;
+//		public Coordinates move;
+//		public ArrayList<Node> children;
 
 		public Node(boolean MAX){
+//			children = new ArrayList<Node>();
+			this.MAX = MAX;
 			if(MAX){
 				value = Integer.MIN_VALUE;
 			}else{
@@ -123,8 +113,10 @@ public class AI {
 			alpha = Integer.MIN_VALUE;
 			beta = Integer.MAX_VALUE;
 		}
-		
+
 		public Node(boolean MAX, int alpha, int beta){
+//			children = new ArrayList<Node>();
+			this.MAX = MAX;
 			if(MAX){
 				value = Integer.MIN_VALUE;
 			}else{

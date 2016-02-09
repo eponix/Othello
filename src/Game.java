@@ -1,8 +1,9 @@
+import java.util.HashMap;
 import java.util.Set;
 
 public class Game {
 	
-	private int boardSize = 8;
+	private int boardSize = 5;
 	private GameEngine gameEngine;
 	
 	public static void main(String[] args){
@@ -18,7 +19,7 @@ public class Game {
 		State board = new State(boardSize);
 		board.clear();
 		Set<Coordinates> moves = gameEngine.findAllLegalMoves(board);
-		printBoard(board, moves);
+//		printBoard(board, moves);
 		boolean skipTurn = false;
 		while(!moves.isEmpty() || skipTurn){
 //		for(int k = 0; k < 10; k++){
@@ -41,17 +42,32 @@ public class Game {
 		}
 	}
 
-	void printBoard(State state, Set<Coordinates> moves) {
-		Coordinates[] movesArray = moves.toArray(new Coordinates[0]);
-		for(int k = 0; k < movesArray.length; k++){
-			System.out.println("coordinate for legal move (" + movesArray[k].getRow() + "," + movesArray[k].getCol() + ")");
-		}
-		
+	void printBoard(State state, HashMap<Coordinates, Integer> suggestions) {
 		for(int i = 0; i < boardSize; i++){
 			System.out.print(i + "|");
 			for(int j = 0; j < boardSize; j++){
-				if(moves.contains(new Coordinates(i,j))){
-					System.out.print("_1_|");
+				Coordinates c = new Coordinates(i,j);
+				if(suggestions.containsKey(c)){
+					System.out.print("_" + suggestions.get(c) + "_|");
+				}else if(state.matrix[i][j] == 0){
+					System.out.print("___|");
+				}else {
+					String m = (state.matrix[i][j] == 1) ? "º" : "•";
+					System.out.print("_" + m + "_|");
+				}
+			}
+			System.out.println(i);
+		}
+		System.out.println("   0   1   2   3   4   5   6   7   ");
+	}
+	
+	void printBoard(State state, Set<Coordinates> moves) {
+		for(int i = 0; i < boardSize; i++){
+			System.out.print(i + "|");
+			for(int j = 0; j < boardSize; j++){
+				Coordinates c = new Coordinates(i,j);
+				if(moves.contains(c)){
+					System.out.print("_" + 1 + "_|");
 				}else if(state.matrix[i][j] == 0){
 					System.out.print("___|");
 				}else {
