@@ -37,6 +37,10 @@ public class State {
 		}
 		return sum;
 	}
+	
+	public String calculateWinner(){
+		return calculateScore(-1) > calculateScore(1) ? "Black" : "White";
+	}
 
 	public State clone(){
 		State temp = new State(size);

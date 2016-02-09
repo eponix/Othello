@@ -3,7 +3,7 @@ import java.util.Set;
 
 public class Game {
 	
-	private int boardSize = 4;
+	private int boardSize = 5;
 	private GameEngine gameEngine;
 	
 	public static void main(String[] args){
@@ -43,22 +43,33 @@ public class Game {
 	}
 
 	void printBoard(State state, HashMap<Coordinates, Integer> suggestions) {
+//		System.out.println("    a     b     c     d     e     f     g     h");
+		System.out.println("    a     b     c     d");
 		for(int i = 0; i < boardSize; i++){
 			System.out.print(i + "|");
 			for(int j = 0; j < boardSize; j++){
 				Coordinates c = new Coordinates(i,j);
 				if(suggestions.containsKey(c)){
-					System.out.print("_" + suggestions.get(c) + "_|");
+					int suggestion = suggestions.get(c);
+					if((suggestion < 0 && suggestion > -10) || suggestion > 9){
+						System.out.print("_" + suggestion + "__|");
+					}else if(suggestion < -9 || suggestion > 99){
+						System.out.print("_" + suggestion + "_|");
+					}else{
+						System.out.print("__" + suggestion + "__|");
+					}
+					
 				}else if(state.matrix[i][j] == 0){
-					System.out.print("___|");
+					System.out.print("_____|");
 				}else {
 					String m = (state.matrix[i][j] == 1) ? "º" : "•";
-					System.out.print("_" + m + "_|");
+					System.out.print("__" + m + "__|");
 				}
 			}
 			System.out.println(i);
 		}
-		System.out.println("   0   1   2   3   4   5   6   7   ");
+//		System.out.println("    a     b     c     d     e     f     g     h");
+		System.out.println("    a     b     c     d");
 	}
 	
 	void printBoard(State state, Set<Coordinates> moves) {
@@ -77,6 +88,6 @@ public class Game {
 			}
 			System.out.println(i);
 		}
-		System.out.println("   0   1   2   3   4   5   6   7   ");
+		System.out.println("   a   b   c   d   e   f   g   h");
 	}
 }

@@ -12,6 +12,7 @@ public class GameEngine {
 	public void makeMove(State state, Coordinates move){
 		state.matrix[move.getRow()][move.getCol()] = state.turn;
 		findLegalMovesForDisc(move.getRow(), move.getCol(), state, true);
+		state.changeTurn();
 	}
 
 	private boolean turnDisc(int dir, int row, int col, State state) {
