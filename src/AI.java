@@ -42,9 +42,11 @@ public class AI {
 		Set<Coordinates> moves = gameEngine.findAllLegalMoves(board);
 		if(moves.isEmpty() && skipTurn){ // Leaf
 //			System.out.println("leaf, depth: " + counter);
+			System.out.println("level "+ counter + " is a leaf");
 			int score = board.calculateScore(player);
 			return score;
 		}else if(moves.isEmpty()){
+			System.out.println("level "+ counter + " has no moves, changes turn");
 			skipTurn = true;
 			Node child = new Node(!node.MAX, node.alpha, node.beta);
 			node.value = generateValueForMove(child, board, player, skipTurn, counter);
@@ -60,8 +62,12 @@ public class AI {
 		if(node.MAX){
 			int childCounter = 0;
 			//		Do we have a smaller value than Beta in node.value ? In that case, we need to evaluate eventual worse cases (in the children)
-			//		If its bigger, it's not going to replace the parent anyway.
+			//		If its bigger, it's not going to replace the parent anyway.	
+			if(node.value > node.beta){
+				System.out.println("pruning on level " + counter);
+			}
 			while(movesIter.hasNext() && node.value <= node.beta){
+				System.out.println("Children: "+ ++childCounter + " on level " + counter);
 				State boardClone = board.clone();
 				Node child = new Node(!node.MAX, node.alpha, node.beta);
 				gameEngine.makeMove(boardClone, (Coordinates) movesIter.next());
@@ -70,16 +76,20 @@ public class AI {
 					node.value = temp;
 					node.alpha = node.value;
 				}
-				System.out.println("Children: "+ ++childCounter + " on level " + counter);
 			}
 			if(counter < 10){
 				System.out.println("level "+ counter + " reached");
 			}
 			return node.value;
 		}else{
+			int childCounter = 0;
 			//		Do we have a smaller value than Beta in node.value ? In that case, we need to evaluate eventual worse cases (in the children)
 			//		If its bigger, it's not going to replace the parent anyway.
+			if(node.value < node.alpha){
+				System.out.println("pruning on level " + counter);
+			}
 			while(movesIter.hasNext() && node.value >= node.alpha){
+				System.out.println("Children: "+ ++childCounter + " on level " + counter);
 				State boardClone = board.clone();
 				Node child = new Node(!node.MAX);
 				gameEngine.makeMove(boardClone, (Coordinates) movesIter.next());
