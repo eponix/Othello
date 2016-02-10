@@ -3,7 +3,7 @@ import java.util.Set;
 
 public class Game {
 	
-	private int boardSize = 5;
+	private int boardSize = 3;
 	private GameEngine gameEngine;
 	
 	public static void main(String[] args){
@@ -43,8 +43,8 @@ public class Game {
 	}
 
 	void printBoard(State state, HashMap<Coordinates, Integer> suggestions) {
-//		System.out.println("    a     b     c     d     e     f     g     h");
-		System.out.println("    a     b     c     d");
+		System.out.println("    a     b     c     d     e     f     g     h");
+//		System.out.println("    a     b     c     d");
 		for(int i = 0; i < boardSize; i++){
 			System.out.print(i + "|");
 			for(int j = 0; j < boardSize; j++){
@@ -68,8 +68,8 @@ public class Game {
 			}
 			System.out.println(i);
 		}
-//		System.out.println("    a     b     c     d     e     f     g     h");
-		System.out.println("    a     b     c     d");
+		System.out.println("    a     b     c     d     e     f     g     h");
+//		System.out.println("    a     b     c     d");
 	}
 	
 	void printBoard(State state, Set<Coordinates> moves) {
@@ -89,5 +89,22 @@ public class Game {
 			System.out.println(i);
 		}
 		System.out.println("   a   b   c   d   e   f   g   h");
+	}
+	
+	public void printMatrix(int[][] matrix){
+		System.out.println("    a     b     c     d     e     f     g     h");
+		for(int i = 0; i < matrix.length; i++){
+			System.out.print(i + "|");
+			for(int j = 0; j < matrix.length; j++){
+				if(matrix[i][j] == 0){
+					System.out.print("_____|");
+				}else {
+					String m = (matrix[i][j] == 1) ? "º" : "•";
+					System.out.print("__" + m + "__|");
+				}
+			}
+			System.out.println(i);
+		}
+		System.out.println("    a     b     c     d     e     f     g     h");
 	}
 }

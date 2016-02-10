@@ -10,6 +10,10 @@ public class GameEngine {
 	}
 
 	public void makeMove(State state, Coordinates move){
+		if(move.getRow() < 0 || move.getCol() < 0){
+			state.changeTurn();
+			return;
+		}
 		state.matrix[move.getRow()][move.getCol()] = state.turn;
 		findLegalMovesForDisc(move.getRow(), move.getCol(), state, true);
 		state.changeTurn();
@@ -116,4 +120,13 @@ public class GameEngine {
 		return (row < 0 || col < 0 || row > state.matrix.length -1 || col > state.matrix[0].length -1);
 	}
 
+	public int calculateScore(int[][] matrix, int player){ // player: 1 white, -1 black
+		int sum = 0;
+		for(int i = 0; i < matrix.length; i++){
+			for(int j = 0; j < matrix.length; j++){
+				sum += matrix[i][j]*player;
+			}
+		}
+		return sum;
+	}
 }

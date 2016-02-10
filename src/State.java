@@ -9,6 +9,23 @@ public class State {
 		turn = -1;	// black begins
 		this.size = size;
 	}
+	
+//	public State(int[][] matrix, int turn){
+//		this.matrix = matrix;
+//		this.turn = turn;
+//		this.size = matrix.length;
+//	}
+	
+	public State(int[][] matrix, int turn){
+		this.matrix = new int[matrix.length][matrix.length];
+		for(int i = 0; i < matrix.length; i++){
+			for(int j = 0; j < matrix.length; j++){
+				this.matrix[i][j] = matrix[i][j];
+			}
+		}
+		this.turn = turn;
+		this.size = matrix.length;
+	}
 
 	public void changeTurn(){
 		turn *= -1;
@@ -52,5 +69,13 @@ public class State {
 		}
 		temp.turn = this.turn;
 		return temp;
+	}
+	
+	public int[][] getMatrix(){
+		return matrix;
+	}
+	
+	public int getTurn(){
+		return turn;
 	}
 }
