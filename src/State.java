@@ -45,18 +45,31 @@ public class State {
 		}
 	}
 
-	public int calculateScore(int player){ // player: 1 white, -1 black
+	public int calculateScore(){ // player: 1 white, -1 black
 		int sum = 0;
 		for(int i = 0; i < matrix.length; i++){
 			for(int j = 0; j < matrix.length; j++){
-				sum += matrix[i][j]*player;
+				sum += matrix[i][j]*AI.playerInt;
 			}
 		}
 		return sum;
 	}
 	
 	public String calculateWinner(){
-		return calculateScore(-1) > calculateScore(1) ? "Black" : "White";
+		int blackSum = 0;
+		for(int i = 0; i < matrix.length; i++){
+			for(int j = 0; j < matrix.length; j++){
+				blackSum += matrix[i][j]*-1;
+			}
+		}
+		
+		int whiteSum = 0;
+		for(int i = 0; i < matrix.length; i++){
+			for(int j = 0; j < matrix.length; j++){
+				whiteSum += matrix[i][j];
+			}
+		}
+		return blackSum > whiteSum ? "Black" : "White";
 	}
 
 	public State clone(){

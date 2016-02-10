@@ -6,11 +6,11 @@ import java.util.Set;
 
 public class AI {
 
-	private int boardSize = 3;
+	private int boardSize = 5;
 	private GameEngine gameEngine;
 	private Game game;
 	private static int nbrOfEndNodes = 0;
-
+	public static int playerInt;
 	public static void main(String[] args){
 		new AI();
 	}
@@ -30,19 +30,19 @@ public class AI {
 		while(true){
 			suggestions.clear();
 			String player = board.turn == 1 ? "white" : "black"; 
-			
-			long start = System.currentTimeMillis();
+			playerInt = board.turn;
+			long programStart = System.currentTimeMillis();
 			Set<Coordinates> moves = gameEngine.findAllLegalMoves(board);
-			System.out.println("Time for finding all legal moves: " + (System.currentTimeMillis()-start));
+			System.out.println("Time for finding all legal moves: " + (System.currentTimeMillis()-programStart));
 			for(Coordinates move : moves){
 				Node startingNode = new Node(false);
 				State boardClone = board.clone();
 				gameEngine.makeMove(boardClone, move);
 //				suggestions.put(move, generateValueForMove2(boardClone.getMatrix(), boardClone.getTurn(), startingNode, boardClone.turn*-1, false, 0));
-				suggestions.put(move, generateValueForMove(startingNode, boardClone, boardClone.turn*-1, false, 0));
-				System.out.println("Time for generating value for move: " + (System.currentTimeMillis()-start));
+				suggestions.put(move, generateValueForMove(startingNode, boardClone, false));
+				System.out.println("Time for generating value for move: " + (System.currentTimeMillis()-programStart));
 			}
-			System.out.println("Total time for IA: " + (System.currentTimeMillis()-start));
+			System.out.println("Total time for IA: " + (System.currentTimeMillis()-programStart));
 			game.printBoard(board, suggestions);
 			if(suggestions.isEmpty() && noMovesAvailable){
 				System.out.println("The winner is: " + board.calculateWinner());
@@ -56,14 +56,14 @@ public class AI {
 				noMovesAvailable = false;
 			}
 			System.out.println("nbrOfEndNodes: " + nbrOfEndNodes);
-			System.out.println("make a move " + player + " by entering row(0-8) [Enter] col(a-h) [Enter]");
+			System.out.println("make a move " + player + " by entering row(0-7) [Enter] col(a-h) [Enter]");
 			System.out.print("row: ");
 			int row = scan.nextInt();
 			System.out.print("col: ");
 			int col = charColToIntCol(scan.next());
 			Coordinates chosenMove = new Coordinates(row,col);
 			while(!suggestions.containsKey(chosenMove)){
-				System.out.println("Your input was incorrect. Please write prefered row(0-8) [Enter] col(a-h) [Enter]");
+				System.out.println("Your input was incorrect. Please write prefered row(0-7) [Enter] col(a-h) [Enter]");
 				row = scan.nextInt();
 				col = charColToIntCol(scan.next());
 				chosenMove = new Coordinates(row,col);
@@ -74,76 +74,75 @@ public class AI {
 
 	}
 	
-	public void run3(){
-		HashMap<Coordinates, Integer> suggestions = new HashMap<Coordinates, Integer>();
-		State board = new State(boardSize);
-		board.clear();
-		Scanner scan = new Scanner(System.in);
-		boolean noMovesAvailable = false;
-		ArrayList<Coordinates> pathOfMoves = new ArrayList<>();
-		initPathOfMoves(pathOfMoves);
-		while(true){
-			suggestions.clear();
-			String player = board.turn == 1 ? "white" : "black"; 
-			
-			long start = System.currentTimeMillis();
-			Set<Coordinates> moves = gameEngine.findAllLegalMoves(board);
-			System.out.println("Time for finding all legal moves: " + (System.currentTimeMillis()-start));
-			for(Coordinates move : moves){
-				Node startingNode = new Node(false);
-				suggestions.put(move, generateValueForMove3(pathOfMoves, move, startingNode, board.turn*-1, false, 0));
-				System.out.println("Time for generating value for move: " + (System.currentTimeMillis()-start));
-			}
-			System.out.println("Total time for IA: " + (System.currentTimeMillis()-start));
-			game.printBoard(board, suggestions);
-			
-			if(suggestions.isEmpty() && noMovesAvailable){
-				System.out.println("The winner is: " + board.calculateWinner());
-				return;
-			}else if(suggestions.isEmpty()){
-				noMovesAvailable = true;
-				board.changeTurn();
-				System.out.println("Skipping turn for " + player);
-				continue;
-			}else{
-				noMovesAvailable = false;
-			}
-			System.out.println("nbrOfEndNodes: " + nbrOfEndNodes);
-			System.out.println("make a move " + player + " by entering row(0-8) [Enter] col(a-h) [Enter]");
-			System.out.print("row: ");
-			int row = scan.nextInt();
-			System.out.print("col: ");
-			int col = charColToIntCol(scan.next());
-			Coordinates chosenMove = new Coordinates(row,col);
-			while(!suggestions.containsKey(chosenMove)){
-				System.out.println("Your input was incorrect. Please write prefered row(0-8) [Enter] col(a-h) [Enter]");
-				row = scan.nextInt();
-				col = charColToIntCol(scan.next());
-				chosenMove = new Coordinates(row,col);
-			}
-			pathOfMoves.add(chosenMove);
-			gameEngine.makeMove(board, chosenMove);
-			System.out.println();
-		}
+//	public void run3(){
+//		HashMap<Coordinates, Integer> suggestions = new HashMap<Coordinates, Integer>();
+//		State board = new State(boardSize);
+//		board.clear();
+//		Scanner scan = new Scanner(System.in);
+//		boolean noMovesAvailable = false;
+//		ArrayList<Coordinates> pathOfMoves = new ArrayList<>();
+//		initPathOfMoves(pathOfMoves);
+//		while(true){
+//			suggestions.clear();
+//			String player = board.turn == 1 ? "white" : "black"; 
+//			
+//			long start = System.currentTimeMillis();
+//			Set<Coordinates> moves = gameEngine.findAllLegalMoves(board);
+//			System.out.println("Time for finding all legal moves: " + (System.currentTimeMillis()-start));
+//			for(Coordinates move : moves){
+//				Node startingNode = new Node(false);
+//				suggestions.put(move, generateValueForMove3(pathOfMoves, move, startingNode, board.turn*-1, false, 0));
+//				System.out.println("Time for generating value for move: " + (System.currentTimeMillis()-start));
+//			}
+//			System.out.println("Total time for IA: " + (System.currentTimeMillis()-start));
+//			game.printBoard(board, suggestions);
+//			
+//			if(suggestions.isEmpty() && noMovesAvailable){
+//				System.out.println("The winner is: " + board.calculateWinner());
+//				return;
+//			}else if(suggestions.isEmpty()){
+//				noMovesAvailable = true;
+//				board.changeTurn();
+//				System.out.println("Skipping turn for " + player);
+//				continue;
+//			}else{
+//				noMovesAvailable = false;
+//			}
+//			System.out.println("nbrOfEndNodes: " + nbrOfEndNodes);
+//			System.out.println("make a move " + player + " by entering row(0-8) [Enter] col(a-h) [Enter]");
+//			System.out.print("row: ");
+//			int row = scan.nextInt();
+//			System.out.print("col: ");
+//			int col = charColToIntCol(scan.next());
+//			Coordinates chosenMove = new Coordinates(row,col);
+//			while(!suggestions.containsKey(chosenMove)){
+//				System.out.println("Your input was incorrect. Please write prefered row(0-8) [Enter] col(a-h) [Enter]");
+//				row = scan.nextInt();
+//				col = charColToIntCol(scan.next());
+//				chosenMove = new Coordinates(row,col);
+//			}
+//			pathOfMoves.add(chosenMove);
+//			gameEngine.makeMove(board, chosenMove);
+//			System.out.println();
+//		}
+//
+//	}
 
-	}
-
-	private int generateValueForMove(Node node, State board, int player, boolean skipTurn, int depth){
-		depth++;
+	private int generateValueForMove(Node node, State board, boolean skipTurn){
 		Set<Coordinates> moves = gameEngine.findAllLegalMoves(board);
 		
-		if(moves.isEmpty() && skipTurn){ // Leaf
+		if(skipTurn && moves.isEmpty()){ // Leaf
 			AI.nbrOfEndNodes++;
-			int score = board.calculateScore(player);
-			System.out.println("level " + depth + " is a leaf, player: " + player + " value: " + score);
+			int score = board.calculateScore();
+//			System.out.println("level " + depth + " is a leaf, player: " + player + " value: " + score);
 			return score;
 		}else if(moves.isEmpty()){
-			System.out.println("level " + depth +" has no more moves, skipping, turn: " + board.turn);
+//			System.out.println("level " + depth +" has no more moves, skipping, turn: " + board.turn);
 			skipTurn = true;
 			Node child = new Node(!node.MAX, node.alpha, node.beta);
 			board.changeTurn();
-			node.value = generateValueForMove(child, board, player, skipTurn, depth);
-			System.out.println("level " + depth + " has no more children");
+			return generateValueForMove(child, board, skipTurn);
+//			System.out.println("level " + depth + " has no more children");
 		}else{
 			skipTurn = false;
 		}
@@ -153,47 +152,48 @@ public class AI {
 			//		Do we have a smaller value than Beta in node.value ? In that case, we need to evaluate eventual worse cases (in the children)
 			//		If its bigger, it's not going to replace the parent anyway.	
 			while(movesIter.hasNext() && node.value < node.beta){
-				System.out.println("Max level: " + depth + " child " + ++childCounter + " (" + moves.size() + ") turn: " + board.turn);
+//				System.out.println("Max level: " + depth + " child " + ++childCounter + " (" + moves.size() + ") turn: " + board.turn);
+				
 				State boardClone = board.clone();
+				
 				Node child = new Node(!node.MAX, node.alpha, node.beta);
 				gameEngine.makeMove(boardClone, (Coordinates) movesIter.next());
-				int temp = generateValueForMove(child, boardClone, player, skipTurn, depth);
+
+				int temp = generateValueForMove(child, boardClone, skipTurn);
 				if(temp > node.value){
 					node.value = temp;
 					if(node.value > node.alpha){
 						node.alpha = node.value;
 					}
 				}
-				if(node.value >= node.beta && movesIter.hasNext()){
-					System.out.println("Max pruning");
-				}
-				if(!movesIter.hasNext()){
-					System.out.println("Max level " + depth +" has no more children");
-				}
+//				if(node.value >= node.beta && movesIter.hasNext()){
+//					System.out.println("Max pruning");
+//				}
+//				if(!movesIter.hasNext()){
+//					System.out.println("Max level " + depth +" has no more children");
+//				}
 			}
 			return node.value;
 		}else{
 			while(movesIter.hasNext() && node.value > node.alpha){
-				System.out.println("Min level: " + depth + " child " + ++childCounter + " (" + moves.size() + ") turn: " + board.turn);
-				if(depth == 1 && childCounter == 2){
-					System.out.println("debugging");
-				}
+//				System.out.println("Min level: " + depth + " child " + ++childCounter + " (" + moves.size() + ") turn: " + board.turn);
+				
 				State boardClone = board.clone();
 				Node child = new Node(!node.MAX, node.alpha, node.beta);
 				gameEngine.makeMove(boardClone, (Coordinates) movesIter.next());
-				int temp = generateValueForMove(child, boardClone, player, skipTurn, depth);
+				int temp = generateValueForMove(child, boardClone, skipTurn);
 				if(temp < node.value){
 					node.value = temp;
 					if(node.value < node.beta){
 						node.beta = node.value;
 					}
 				}
-				if(node.value <= node.alpha && movesIter.hasNext()){
-					System.out.println("Min pruning");
-				}
-				if(!movesIter.hasNext()){
-					System.out.println("Min level " + depth +" has no more children");
-				}
+//				if(node.value <= node.alpha && movesIter.hasNext()){
+//					System.out.println("Min pruning");
+//				}
+//				if(!movesIter.hasNext()){
+//					System.out.println("Min level " + depth +" has no more children");
+//				}
 			}
 			return node.value;
 		}

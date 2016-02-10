@@ -3,7 +3,7 @@ import java.util.Set;
 
 public class Game {
 	
-	private int boardSize = 3;
+	private int boardSize = 5;
 	private GameEngine gameEngine;
 	
 	public static void main(String[] args){

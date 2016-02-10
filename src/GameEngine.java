@@ -20,7 +20,7 @@ public class GameEngine {
 	}
 
 	private boolean turnDisc(int dir, int row, int col, State state) {
-		if(outOfBounds(row, col, state) || state.matrix[row][col] == 0){
+		if(outOfBounds(row, col) || state.matrix[row][col] == 0){
 			return false;
 		}else if(state.matrix[row][col] == state.turn){
 			return true;
@@ -60,7 +60,7 @@ public class GameEngine {
 		for(int i = row-1; i <= row+1; i++){
 			for(int j = col-1; j <= col+1; j++){
 				dir++;
-				if(!outOfBounds(i, j, state) && state.matrix[i][j] == state.turn *-1 ){
+				if(!outOfBounds(i, j) && state.matrix[i][j] == state.turn *-1 ){
 					//					System.out.println("Found opponent's disc at (" + i + "," + j + ")" );
 					if(doMove){
 						//						System.out.println("Making a move!");
@@ -80,7 +80,7 @@ public class GameEngine {
 	}
 
 	private Coordinates legalMove(int dir, int row, int col, State state) {
-		if(outOfBounds(row, col, state) || state.matrix[row][col] == state.turn){
+		if(outOfBounds(row, col) || state.matrix[row][col] == state.turn){
 			return null;
 		}else if(state.matrix[row][col] == 0){
 			return new Coordinates(row, col);
@@ -116,8 +116,8 @@ public class GameEngine {
 		return new Coordinates(row, col);
 	}
 
-	private boolean outOfBounds(int row, int col, State state){
-		return (row < 0 || col < 0 || row > state.matrix.length -1 || col > state.matrix[0].length -1);
+	private boolean outOfBounds(int row, int col){
+		return (row < 0 || col < 0 || row > boardSize -1 || col > boardSize -1);
 	}
 
 	public int calculateScore(int[][] matrix, int player){ // player: 1 white, -1 black

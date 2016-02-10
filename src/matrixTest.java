@@ -20,6 +20,14 @@ public class matrixTest {
 		ArrayList<Coordinates> pathOfMoves = new ArrayList<Coordinates>();
 		addToArrayList(pathOfMoves);
 		System.out.println("size of ArrayList = " + pathOfMoves.size());
+		long start = System.currentTimeMillis();
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("differ: " + (System.currentTimeMillis() - start));
 	}
 	
 	private void doSmtWithMatrix(int[][] matrix){
