@@ -10,12 +10,6 @@ public class State {
 		this.size = size;
 	}
 	
-//	public State(int[][] matrix, int turn){
-//		this.matrix = matrix;
-//		this.turn = turn;
-//		this.size = matrix.length;
-//	}
-	
 	public State(int[][] matrix, int turn){
 		this.matrix = new int[matrix.length][matrix.length];
 		for(int i = 0; i < matrix.length; i++){
@@ -74,7 +68,6 @@ public class State {
 
 	public State clone(){
 		State temp = new State(size);
-		//		temp.matrix = this.matrix.clone();
 		for(int i = 0; i < size; i++){
 			for(int j = 0; j < size; j++){
 				temp.matrix[i][j] = this.matrix[i][j];
